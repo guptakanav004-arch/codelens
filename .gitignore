@@ -1,0 +1,17 @@
+node_modules/
+.next/
+out/
+.env
+.env.local
+.env.*.local
+*.log
+next-env.d.ts
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+backend/.env
+.pytest_cache/
+.ruff_cache/
