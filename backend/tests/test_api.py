@@ -109,6 +109,40 @@ def test_malformed_ai_response(monkeypatch):
     assert r.json()["error"]["code"] == "ai_malformed_response"
 
 
+@pytest.mark.asyncio
+async def test_nemotron_disables_reasoning_to_preserve_output_budget(monkeypatch):
+    class FakeSettings:
+        ai_configured = True
+        nvidia_api_key = "test-key"
+        nemotron_model = "test-model"
+        nvidia_api_base_url = "https://example.test/v1"
+        timeout_seconds = 90
+        max_tokens = 6000
+
+    class FakeResponse:
+        status_code = 200
+
+        @staticmethod
+        def json():
+            return {"choices": [{"message": {"content": "response"}}]}
+
+    class FakeClient:
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *_):
+            return None
+
+        async def post(self, url, *, json, headers):
+            assert json["reasoning_effort"] == "none"
+            return FakeResponse()
+
+    monkeypatch.setattr(nemotron_service, "get_settings", lambda: FakeSettings())
+    monkeypatch.setattr(nemotron_service.httpx, "AsyncClient", lambda **_: FakeClient())
+
+    assert await nemotron_service.call_nemotron("system", "user") == "response"
+
+
 def test_incomplete_ai_response(monkeypatch):
     monkeypatch.setattr(nemotron_service, "call_nemotron", fake_ai(json.dumps({"quality_score": 80})))
     r = client.post("/api/review", json={"code": PY_CODE, "language": "python"})

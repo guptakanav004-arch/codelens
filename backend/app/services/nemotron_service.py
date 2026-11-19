@@ -29,6 +29,7 @@ async def call_nemotron(system: str, user: str) -> str:
         "temperature": 0.2,
         "top_p": 0.9,
         "max_tokens": cfg.max_tokens,
+        "reasoning_effort": "none",
         "stream": False,
     }
     headers = {"Authorization": f"Bearer {cfg.nvidia_api_key}", "Accept": "application/json"}

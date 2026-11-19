@@ -105,6 +105,18 @@ uvicorn app.main:app --reload --port 8000
 
 Then set `BACKEND_API_URL=http://localhost:8000` in the frontend `.env.local` and restart `npm run dev`.
 
+### Deploy frontend and backend together on Vercel
+
+The root `vercel.json` configures the Next.js frontend and FastAPI backend as Vercel Services in one project. The frontend calls the private backend through a service binding; do not set `BACKEND_API_URL` manually in Vercel.
+
+In the Vercel project settings, add these server-side environment variables for the Production (and Preview, if used) environment:
+
+- `NVIDIA_API_KEY` — a valid NVIDIA API key
+- `NEMOTRON_MODEL` — the model ID your key can access
+- `NVIDIA_API_BASE_URL` — `https://integrate.api.nvidia.com/v1`
+
+Redeploy after adding or changing environment variables. Vercel Services is currently in beta.
+
 Optional: install ESLint (`npm i -g eslint`) to enable JavaScript linting in the Python backend.
 
 Run backend tests: `cd backend && pytest` (the Nemotron call is mocked).
