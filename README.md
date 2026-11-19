@@ -154,3 +154,4 @@ _Placeholders — add images to `docs/screenshots/`:_
 - GitHub PR integration and multi-file/project reviews
 - Inline Monaco quick-fixes that apply an issue's `fixed_code`
 - Shareable review links and PDF export
+# codelens
